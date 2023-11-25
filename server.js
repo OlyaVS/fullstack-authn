@@ -28,8 +28,50 @@ app.use(express.urlencoded({
   extended: true
 }));
 
-// ADD HERE THE REST OF THE ENDPOINTS
+const findUser = (email) => {
+  const results = db.data.users.filter(user => user.email === email);
+  return results.length === 0 ? undefined : results[0];
+}
 
+// TODO: add data validation
+app.post('/auth/register', (req, res) => {
+  const salt = bcrypt.genSaltSync(10);
+  const hashedPass = bcrypt.hashSync(req.body.password, salt);
+
+  const user = {
+    name: req.body.name,
+    email: req.body.email,
+    password: hashedPass
+  }
+
+  const userFound = findUser(user.email);
+  if (userFound) {
+    res.send({ok: false, message: "Useralready exists"});
+  } else {
+    db.data.users.push(user);
+    db.write();
+    res.send({ok: true});
+  }
+});
+
+app.post('auth/login', (req, res) => {
+  const userFound = findUser(req.body.email);
+
+  if (userFound) {
+    // user found, check password for successful login
+    const passwordIsCorrect = bcrypt.compareSync(req.body.password, userFound.password)
+    if (passwordIsCorrect) {
+      // send public user data to render on the client side
+      res.send({ok: true, name: userFound.name, email: userFound.email});
+    } else {
+      res.send({ok: false, message: "Credentials are incorrect"});
+    }
+
+  } else {
+    // user not found
+    res.send({ok: false, message: "Credentials are incorrect"});
+  }
+})
 
 
 app.get("*", (req, res) => {
