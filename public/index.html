@@ -56,21 +56,21 @@
             <form id="formRegister">
                 <fieldset>
                     <label for="register_name">Your Name</label>
-                    <input placeholder="You Name"
+                    <input placeholder="name"
                            id="register_name"
                            autocomplete="name"
                            required>
 
                     <label for="register_email">Your Email</label>
                     <input type="email"
-                           placeholder="Your Email"
+                           placeholder="email"
                            id="register_email"
                            autocomplete="username"
                            required>
                     
                     <label for="register_password">Your Password</label>
                     <input type="password"
-                           placeholder="Your Password"
+                           placeholder="password"
                            id="register_password"
                            autocomplete="new-password"
                            required>
@@ -85,19 +85,23 @@
 
             <form id="formLogin">
                 <fieldset>
-                    <input placeholder="email" id="login_email"
-                        required>      
-                    <label for="login_password">Password</label>
-                    <input type="password" id="login_password"
-                       >
+                    <label for="login_email">Your Email</label>
+                    <input placeholder="email"
+                           id="login_email"
+                           autocomplete="username"
+                           required>
+
+                    <label for="login_password">Your Password</label>
+                    <input type="password"
+                           placeholder="password"
+                           autocomplete="current-password"
+                           id="login_password">
                 </fieldset>
                 <button>Continue</button>
 
                 <p>
                     <a href="/register" class="navlink">Register a new account instead</a> 
-                </p>                   
-                
-                </fieldset>
+                </p>
             </form>            
         </section>
 
