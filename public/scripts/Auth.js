@@ -45,7 +45,13 @@ const Auth = {
                 password: user.password,
                 name: user.name
             })
-            navigator.credentials.store(credentials);
+
+            // user may turn off the password manager
+            try {
+                navigator.credentials.store(credentials);
+            } catch (e) {
+                console.log(e)
+            }
         }
     },
     autoLogin: async () => {
