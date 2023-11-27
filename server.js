@@ -73,6 +73,38 @@ app.post('/auth/login', (req, res) => {
   }
 })
 
+app.post('/auth/login-google', (req, res) => {
+  // decode JWT string
+  const jwt = jwtJsDecode.jwtDecode(req.body.credential);
+  console.log(jwt.payload)
+
+  const  user = {
+    name: jwt.payload.given_name,
+    email: jwt.payload.email,
+    password: false,
+  }
+
+  const userFound = findUser(user.email);
+
+  if (userFound) {
+    user.federated = {
+      google: jwt.payload.aud,
+    };
+    db.write();
+  } else {
+    db.data.users.push({
+      ...user,
+      federated: {
+        google: jwt.payload.aud,
+      }
+    })
+    db.write();
+  }
+
+  res.send({ok: true, name: user.name, email: user.email});
+
+})
+
 
 app.get("*", (req, res) => {
     res.sendFile(__dirname + "public/index.html"); 

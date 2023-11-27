@@ -102,6 +102,27 @@
                 <p>
                     <a href="/register" class="navlink">Register a new account instead</a> 
                 </p>
+
+
+                <fieldset>
+                    <div id="g_id_onload"
+                         data-client_id="60456021518-jdv8lrn7p162ohtji4i7vv62fvfns336.apps.googleusercontent.com"
+                         data-context="signin"
+                         data-ux_mode="popup"
+                         data-callback="loginFromGoogle"
+                         data-auto_select="false"
+                         data-itp_support="false">
+                    </div>
+
+                    <div class="g_id_signin"
+                         data-type="standard"
+                         data-shape="rectangular"
+                         data-theme="outline"
+                         data-text="signin_with"
+                         data-size="medium"
+                         data-logo_alignment="left">
+                    </div>
+                </fieldset>
             </form>            
         </section>
 
@@ -119,4 +140,10 @@
         </section>
     </main>
 </body>
+<script src="https://accounts.google.com/gsi/client" async></script>
+<script>
+    function loginFromGoogle(data) {
+        Auth.loginFromGoogle(data)
+    }
+</script>
 </html>

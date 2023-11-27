@@ -28,6 +28,14 @@ const Auth = {
             name: response.name
         });
     },
+    loginFromGoogle: async (data) => {
+        // data.credential - JWT
+        const response = await API.loginFromGoogle(data);
+        Auth.postLogin(response, {
+            name: response.name,
+            email: response.email
+        })
+    },
     postLogin: (response, user) => {
         if (response.ok) {
             Auth.isLoggedIn = true;
@@ -53,14 +61,22 @@ const Auth = {
                 console.log(e)
             }
         }
+
+        console.log(Auth.account);
     },
     autoLogin: async () => {
         if (window.PasswordCredential) {
             // get the username and unhashed clear password for login user on page load
             const credentials = await navigator.credentials.get({password: true});
-            document.getElementById("login_email").value = credentials.id;
-            document.getElementById("login_password").value = credentials.password;
-            Auth.login();
+            if (credentials) {
+                try {
+                    document.getElementById("login_email").value = credentials.id;
+                    document.getElementById("login_password").value = credentials.password;
+                    Auth.login();
+                } catch (e) {
+                    console.log(e);
+                }
+            }
         }
     },
     logout: () => {
@@ -70,7 +86,7 @@ const Auth = {
         Router.go('/');
 
         // Do not auto login after logout
-        if (window.PasswordCredentials) {
+        if (window.PasswordCredential) {
             navigator.credentials.preventSilentAccess();
         }
     },
