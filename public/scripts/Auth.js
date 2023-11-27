@@ -12,11 +12,7 @@ const Auth = {
             password: document.getElementById("register_password").value,
         }
         const response = await API.register(user);
-        console.log(response)
-        Auth.postLogin(response, {
-            name: user.name,
-            email: user. email
-        });
+        Auth.postLogin(response, user);
     },
     login: async (event) => {
         event.preventDefault();
@@ -38,6 +34,27 @@ const Auth = {
             Router.go('/account');
         } else {
             alert(response.message);
+        }
+
+        // store credentials to the Credential Management API storage
+        if (window.PasswordCredential && user.password) {
+            const credentials = new PasswordCredential({
+                id: user.email,
+                password: user.password,
+                name: user.name
+            })
+            navigator.credentials.store(credentials);
+        }
+    },
+    logout: () => {
+        Auth.isLoggedIn = false;
+        Auth.account = null;
+        Auth.updateStatus();
+        Router.go('/');
+
+        // Do not auto login after logout
+        if (window.PasswordCredentials) {
+            navigator.credentials.preventSilentAccess();
         }
     },
     updateStatus: () => {
