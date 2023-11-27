@@ -12,7 +12,11 @@ const Auth = {
             password: document.getElementById("register_password").value,
         }
         const response = await API.register(user);
-        console.log(response);
+        console.log(response)
+        Auth.postLogin(response, {
+            name: user.name,
+            email: user. email
+        });
     },
     login: async (event) => {
         event.preventDefault();
@@ -21,7 +25,20 @@ const Auth = {
             password: document.getElementById("login_password").value,
         }
         const response = await API.login(credentials);
-        console.log(response);
+        Auth.postLogin(response, {
+            ...credentials,
+            name: response.name
+        });
+    },
+    postLogin: (response, user) => {
+        if (response.ok) {
+            Auth.isLoggedIn = true;
+            Auth.account = user;
+            Auth.updateStatus();
+            Router.go('/account');
+        } else {
+            alert(response.message);
+        }
     },
     updateStatus: () => {
         if (Auth.isLoggedIn && Auth.account) {

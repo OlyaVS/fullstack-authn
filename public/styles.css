@@ -93,6 +93,7 @@ button {
     border-radius: 40px;
     color: var(--color3);
     font-size: 16px;
+    cursor: pointer;
 }
 
 h2 {
