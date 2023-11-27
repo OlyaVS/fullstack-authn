@@ -4,7 +4,26 @@ import Router from "./Router.js";
 const Auth = {
     isLoggedIn: false,
     account: null,
-    updateStatus() {
+    register: async (event) => {
+        event.preventDefault();
+        const user = {
+            name: document.getElementById("register_name").value,
+            email: document.getElementById("register_email").value,
+            password: document.getElementById("register_password").value,
+        }
+        const response = await API.register(user);
+        console.log(response);
+    },
+    login: async (event) => {
+        event.preventDefault();
+        const credentials = {
+            email: document.getElementById("login_email").value,
+            password: document.getElementById("login_password").value,
+        }
+        const response = await API.login(credentials);
+        console.log(response);
+    },
+    updateStatus: () => {
         if (Auth.isLoggedIn && Auth.account) {
             document.querySelectorAll(".logged_out").forEach(
                 e => e.style.display = "none"

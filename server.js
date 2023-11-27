@@ -46,7 +46,7 @@ app.post('/auth/register', (req, res) => {
 
   const userFound = findUser(user.email);
   if (userFound) {
-    res.send({ok: false, message: "Useralready exists"});
+    res.send({ok: false, message: "User already exists"});
   } else {
     db.data.users.push(user);
     db.write();
@@ -54,7 +54,7 @@ app.post('/auth/register', (req, res) => {
   }
 });
 
-app.post('auth/login', (req, res) => {
+app.post('/auth/login', (req, res) => {
   const userFound = findUser(req.body.email);
 
   if (userFound) {
