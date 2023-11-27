@@ -15,7 +15,9 @@ const Auth = {
         Auth.postLogin(response, user);
     },
     login: async (event) => {
-        event.preventDefault();
+        if (event) {
+            event.preventDefault();
+        }
         const credentials = {
             email: document.getElementById("login_email").value,
             password: document.getElementById("login_password").value,
@@ -44,6 +46,15 @@ const Auth = {
                 name: user.name
             })
             navigator.credentials.store(credentials);
+        }
+    },
+    autoLogin: async () => {
+        if (window.PasswordCredential) {
+            // get the username and unhashed clear password for login user on page load
+            const credentials = await navigator.credentials.get({password: true});
+            document.getElementById("login_email").value = credentials.id;
+            document.getElementById("login_password").value = credentials.password;
+            Auth.login();
         }
     },
     logout: () => {
@@ -87,6 +98,7 @@ const Auth = {
     },
 }
 Auth.updateStatus();
+Auth.autoLogin();
 
 export default Auth;
 
