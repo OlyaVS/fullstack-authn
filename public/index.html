@@ -91,11 +91,14 @@
                            autocomplete="username"
                            required>
 
-                    <label for="login_password">Your Password</label>
-                    <input type="password"
-                           placeholder="password"
-                           autocomplete="current-password"
-                           id="login_password">
+                    <section hidden id="login_section_password">
+                        <label for="login_password">Your Password</label>
+                        <input type="password"
+                               placeholder="password"
+                               autocomplete="current-password"
+                               id="login_password">
+                    </section>
+                    <section hidden id="login_section_webauthn"></section>
                 </fieldset>
                 <button>Continue</button>
 
