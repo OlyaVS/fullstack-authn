@@ -19,15 +19,23 @@ const Auth = {
         if (event) {
             event.preventDefault();
         }
-        const credentials = {
-            email: document.getElementById("login_email").value,
-            password: document.getElementById("login_password").value,
+
+        if (Auth.loginStep === 1) {
+            // WebAuthn Login Step 1
+            Auth.checkAuthOptions();
+
+        } else {
+            // WebAuthn Login Step 2
+            const credentials = {
+                email: document.getElementById("login_email").value,
+                password: document.getElementById("login_password").value,
+            }
+            const response = await API.login(credentials);
+            Auth.postLogin(response, {
+                ...credentials,
+                name: response.name
+            });
         }
-        const response = await API.login(credentials);
-        Auth.postLogin(response, {
-            ...credentials,
-            name: response.name
-        });
     },
     loginFromGoogle: async (data) => {
         // data.credential - JWT
@@ -62,8 +70,6 @@ const Auth = {
                 console.log(e)
             }
         }
-
-        console.log(Auth.account);
     },
     autoLogin: async () => {
         if (window.PasswordCredential) {
@@ -120,6 +126,60 @@ const Auth = {
         document.getElementById('login_section_password').hidden = true;
         document.getElementById('login_section_webauthn').hidden = true;
     },
+    checkAuthOptions: async () => {
+        const options = await API.checkAuthOptions({
+            email: document.getElementById("login_email").value
+        });
+
+        console.log(options);
+
+        if (options.password) {
+            document.getElementById('login_section_password').hidden = false;
+        }
+
+        if (options.webauthn) {
+            document.getElementById('login_section_webauthn').hidden = false;
+        }
+        Auth.challenge = options.challenge;
+        Auth.loginStep = 2;
+    },
+    addWebAuthn: async () => {
+        // 1 step - ask server for options
+        const options = await API.webAuthn.registrationOptions();
+        // add more metadata to that options
+        options.authenticatorSelection.residentKey = 'required';
+        options.authenticatorSelection.requireResidentKey = true;
+        options.extensions = {
+            credProps: true,
+        };
+
+        // call the authenticator to do the staff with faceid or what ever
+        const authRes = await SimpleWebAuthnBrowser.startRegistration(options);
+
+        // 2 - we send this response back to the server to verify registraion
+        const verificationRes = await API.webAuthn.registrationVerification(authRes);
+        if (verificationRes.ok) {
+            alert("You can now login with WebAuthn!");
+        } else {
+            alert(verificationRes.message)
+        }
+    },
+    webAuthnLogin: async () => {
+        const email = document.getElementById("login_email").value;
+        // 1 step - get the options from the server
+        const options = await API.webAuthn.loginOptions(email);
+        // call the API
+        const loginRes = await SimpleWebAuthnBrowser.startAuthentication(options);
+        // verify
+        const verificationRes = await API.webAuthn.loginVerification(email, loginRes);
+
+        if (verificationRes) {
+            Auth.postLogin(verificationRes, verificationRes.user);
+        } else {
+            alert(verificationRes.message)
+        }
+    }
+
 }
 Auth.updateStatus();
 Auth.autoLogin();
