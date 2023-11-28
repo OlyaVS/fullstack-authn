@@ -11,7 +11,7 @@ Run <br />
 Go to http://localhost:5050/
 
 A code sample of:
-- Login with username and passord
+- Login with username and password
   - Standard authentication classic flow with username and password
   - Credential Management API for auto login and storing credentials safely on client side
 - Federated login with Google
