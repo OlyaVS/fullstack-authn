@@ -4,6 +4,7 @@ import Router from "./Router.js";
 const Auth = {
     isLoggedIn: false,
     account: null,
+    loginStep: 1,
     register: async (event) => {
         event.preventDefault();
         const user = {
@@ -116,7 +117,8 @@ const Auth = {
         }
     },    
     init: () => {
-        
+        document.getElementById('login_section_password').hidden = true;
+        document.getElementById('login_section_webauthn').hidden = true;
     },
 }
 Auth.updateStatus();
