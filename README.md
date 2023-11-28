@@ -10,7 +10,7 @@ Run <br />
 
 Go to http://localhost:5050/
 
-Code sample of:
+`classic_flow` branch - a code sample of:
 - Standard authentication classic flow with username and password
 - Credential Management API for auto login and storing credentials safely on client side
 - Federated login with Google
